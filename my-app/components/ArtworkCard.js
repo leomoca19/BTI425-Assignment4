@@ -16,12 +16,12 @@ export default function ArtworkCard({ objectID }) {
 
   const na = 'N/A',
     imgUrl =
-      data.primaryImageSmall ||
+      data?.primaryImageSmall ||
       'https://placehold.co/375x375?text=Not+Available',
-    title = data.title || na,
-    date = data.objectDate || na,
-    calssification = data.classification || na,
-    medium = data.medium || na
+    title = data?.title || na,
+    date = data?.objectDate || na,
+    calssification = data?.classification || na,
+    medium = data?.medium || na
 
   return (
     <>

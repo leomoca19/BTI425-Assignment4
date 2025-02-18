@@ -16,15 +16,15 @@ export default function ArtworkCardDetail({ objectID }) {
 
   const na = 'N/A',
     imgUrl =
-      data.primaryImage || 'https://placehold.co/375x375?text=Not+Available',
-    title = data.title || na,
-    date = data.objectDate || na,
-    calssification = data.classification || na,
-    medium = data.medium || na,
-    artistName = data.artistDisplayName || na,
-    artistUrl = data.artistWikidata_URL,
-    creditLine = data.creditLine || na,
-    dimensions = data.dimensions || na
+      data?.primaryImage || 'https://placehold.co/375x375?text=Not+Available',
+    title = data?.title || na,
+    date = data?.objectDate || na,
+    calssification = data?.classification || na,
+    medium = data?.medium || na,
+    artistName = data?.artistDisplayName || na,
+    artistUrl = data?.artistWikidata_URL,
+    creditLine = data?.creditLine || na,
+    dimensions = data?.dimensions || na
 
   return (
     <>
