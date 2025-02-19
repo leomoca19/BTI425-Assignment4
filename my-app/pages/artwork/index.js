@@ -50,17 +50,17 @@ export default function Artwork() {
       </Col>
     )
 
-    if (artworkList.length > 0) {
-      const art = artworkList[page - 1].map((objectID) => (
-        <Col lg={3} key={objectID}>
-          <ArtworkCard objectID={objectID} />
-        </Col>
-      ))
-    }
-
     return (
       <>
-        <Row className="gy-4">{artworkList.length > 0 ? art : nothingHere}</Row>
+        <Row className="gy-4">
+          {artworkList.length > 0
+            ? artworkList[page - 1].map((objectID) => (
+                <Col lg={3} key={objectID}>
+                  <ArtworkCard objectID={objectID} />
+                </Col>
+              ))
+            : nothingHere}
+        </Row>
         {artworkList.length > 0 && (
           <>
             <br />
