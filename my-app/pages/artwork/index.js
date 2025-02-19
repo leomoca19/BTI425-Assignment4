@@ -50,11 +50,13 @@ export default function Artwork() {
       </Col>
     )
 
-    const art = artworkList[page - 1].map((objectID) => (
-      <Col lg={3} key={objectID}>
-        <ArtworkCard objectID={objectID} />
-      </Col>
-    ))
+    if (artworkList.length > 0) {
+      const art = artworkList[page - 1].map((objectID) => (
+        <Col lg={3} key={objectID}>
+          <ArtworkCard objectID={objectID} />
+        </Col>
+      ))
+    }
 
     return (
       <>
