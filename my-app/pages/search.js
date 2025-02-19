@@ -1,6 +1,7 @@
 import { useForm } from 'react-hook-form'
 import { useRouter } from 'next/router'
 import { Row, Col, Button, Form } from 'react-bootstrap'
+import { useEffect } from 'react'
 
 export default function AdvancedSearch() {
   const router = useRouter()
@@ -12,14 +13,14 @@ export default function AdvancedSearch() {
   } = useForm()
 
   function submitForm(data) {
-    let queryString = data.searchBy + '=true'
+    let queryString = (data.searchBy || 'title') + '=true'
 
     if (data.geoLocation) queryString += `&geoLocation=${data.geoLocation}`
     if (data.medium) queryString += `&medium=${data.medium}`
 
     queryString +=
       `&isOnView=${data.isOnView || false}` +
-      `&isHighlight${data.isHighlight || false}` +
+      `&isHighlight=${data.isHighlight || false}` +
       `&q=${data.q}`
 
     router.push(`/artwork?${queryString}`)
