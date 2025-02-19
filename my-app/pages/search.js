@@ -1,7 +1,6 @@
 import { useForm } from 'react-hook-form'
 import { useRouter } from 'next/router'
 import { Row, Col, Button, Form } from 'react-bootstrap'
-import { useEffect } from 'react'
 
 export default function AdvancedSearch() {
   const router = useRouter()
