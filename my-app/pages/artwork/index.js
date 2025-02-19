@@ -2,8 +2,8 @@ import useSWR from 'swr'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import Error from 'next/error'
-import { Col } from 'react-bootstrap'
-
+import { Row, Col, Card, Pagination } from 'react-bootstrap'
+import ArtworkCard from '@/components/ArtworkCard'
 const PER_PAGE = 12
 
 export default function Artwork() {
@@ -17,6 +17,8 @@ export default function Artwork() {
   const { data, error } = useSWR(
     `https://collectionapi.metmuseum.org/public/collection/v1/search?${finalQuery}`
   )
+
+  if (error) return <Error statusCode={404} />
 
   function previousPage() {
     if (page > 1) setPage(page - 1)
@@ -39,23 +41,40 @@ export default function Artwork() {
     }
   }, [data])
 
-  if (error) return <Error statusCode={404} />
-
   if (artworkList) {
-    const nothing_here = (
+    const nothingHere = (
       <Col>
         <Card>
-          <h4>Nothing Here</h4>Try searching for something else.
+          <h4>Nothing Here</h4>Try searching for something else
         </Card>
       </Col>
     )
 
-    const option1 = artworkList[page - 1].forEach(
-      (element) => 'Under construction'
-    )
-    const option2 = 0
+    const art = artworkList[page - 1].map((objectID) => (
+      <Col lg={3} key={objectID}>
+        <ArtworkCard objectID={objectID} />
+      </Col>
+    ))
 
-    return <>{artworkList.length > 0 ? <>{option1}</> : nothing_here}</>
+    return (
+      <>
+        <Row className="gy-4">{artworkList.length > 0 ? art : nothingHere}</Row>
+        {artworkList.length > 0 && (
+          <>
+            <br />
+            <Row>
+              <Col>
+                <Pagination>
+                  <Pagination.Prev onClick={previousPage} />
+                  <Pagination.Item>{page}</Pagination.Item>
+                  <Pagination.Next onClick={nextPage} />
+                </Pagination>
+              </Col>
+            </Row>
+          </>
+        )}
+      </>
+    )
   }
 
   return null
