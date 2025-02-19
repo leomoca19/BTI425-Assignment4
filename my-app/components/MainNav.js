@@ -1,9 +1,18 @@
-import { Container, Nav, Navbar } from 'react-bootstrap'
+import { Container, Nav, Navbar, Form, Button } from 'react-bootstrap'
 import Link from 'next/link'
-import Form from 'react-bootstrap/Form'
-import Button from 'react-bootstrap/Button'
+import { useRouter } from 'next/router'
+import { useState } from 'react'
 
 export default function MainNav() {
+  const router = useRouter()
+
+  const [query, setQuery] = useState('')
+
+  function handleSubmit(event) {
+    event.preventDefault()
+    router.push(`/artwork?title=true&q=${query}`)
+  }
+
   return (
     <>
       <Navbar expand="lg" className="fixed-top navbar-dark bg-primary">
@@ -17,14 +26,19 @@ export default function MainNav() {
               <Nav.Link>Advanced Search</Nav.Link>
             </Link>
           </Nav>
-          <Form className="d-flex">
-            <Form.Control
-              type="search"
-              placeholder="Search"
-              className="me-2"
-              aria-label="Search"
-            />
-            <Button variant="success">Search</Button>
+          <Form className="d-flex" onSubmit={handleSubmit}>
+            <Form.Group>
+              <Form.Control
+                type="search"
+                placeholder="Search"
+                required
+                vlaue={query}
+                onChange={(e) => setQuery(e.target.value)}
+              />
+            </Form.Group>
+            <Button type="submit" variant="success">
+              Search
+            </Button>
           </Form>
         </Container>
       </Navbar>
