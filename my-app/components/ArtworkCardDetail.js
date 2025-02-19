@@ -15,8 +15,7 @@ export default function ArtworkCardDetail({ objectID }) {
   }
 
   const na = 'N/A',
-    imgUrl =
-      data?.primaryImage || 'https://placehold.co/375x375?text=Not+Available',
+    imgUrl = data?.primaryImage || '',
     title = data?.title || na,
     date = data?.objectDate || na,
     calssification = data?.classification || na,
@@ -33,20 +32,35 @@ export default function ArtworkCardDetail({ objectID }) {
         <Card.Body>
           <Card.Title>{title}</Card.Title>
           <Card.Text>
+            <strong>Date: </strong>
             {date}
+            <br />
+            <strong>Classification: </strong>
             {calssification}
+            <br />
+            <strong>Medium: </strong>
             {medium}
             <br />
             <br />
+            <strong>Artist: </strong>
             {artistName}
 
             {artistName !== na && (
-              <a href={artistUrl} target="_blank" rel="noreferrer">
-                wiki
-              </a>
+              <>
+                (&nbsp;
+                <a href={artistUrl} target="_blank" rel="noreferrer">
+                  wiki
+                </a>
+                &nbsp;)
+              </>
             )}
 
+            <br />
+
+            <strong>Credit Line: </strong>
             {creditLine}
+            <br />
+            <strong>Dimensions: </strong>
             {dimensions}
           </Card.Text>
         </Card.Body>
