@@ -1,4 +1,11 @@
-import { Container, Nav, Navbar, Form, Button } from 'react-bootstrap'
+import {
+  Container,
+  Nav,
+  Navbar,
+  Form,
+  Button,
+  NavDropdown,
+} from 'react-bootstrap'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
@@ -53,6 +60,20 @@ export default function MainNav() {
               </Button>
             </Form>
             &nbsp;
+            <Nav>
+              <NavDropdown title="User Name" id="user-dropdown">
+                <Link href="/favourites" passHref legacyBehavior>
+                  <NavDropdown.Item onClick={() => setIsExpanded(false)}>
+                    Favourites
+                  </NavDropdown.Item>
+                </Link>
+                <Link href="/history" passHref legacyBehavior>
+                  <NavDropdown.Item onClick={() => setIsExpanded(false)}>
+                    Search History
+                  </NavDropdown.Item>
+                </Link>
+              </NavDropdown>
+            </Nav>
           </Navbar.Collapse>
         </Container>
       </Navbar>
