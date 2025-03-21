@@ -1,17 +1,35 @@
 import useSWR from 'swr'
 import Error from 'next/error'
 import { Card, Button } from 'react-bootstrap'
-import Link from 'next/link'
+import { useState, useEffect } from 'react'
+import { useAtom } from 'jotai'
+import { favouritesAtom } from '@/store'
+
+const url_base = `https://collectionapi.metmuseum.org/public/collection/v1/objects/`
 
 export default function ArtworkCardDetail({ objectID }) {
-  const { data, error } = useSWR(
-    `https://collectionapi.metmuseum.org/public/collection/v1/objects/${objectID}`
-  )
+  const { data, error } = useSWR(objectID ? url_base + objectID : null)
+
+  const [favouritesList, setFavouritesList] = useAtom(favouritesAtom)
+  const [showAdded, setShowAdded] = useState(false)
+  useEffect(() => {
+    setShowAdded(favouritesList.includes(objectID))
+  }, [favouritesList, objectID])
 
   if (error) {
     return <Error statusCode={404} />
   } else if (!data) {
     return null
+  }
+
+  function favouritesClicked() {
+    if (showAdded) {
+      setFavouritesList((current) => current.filter((fav) => fav != objectID))
+      setShowAdded(false)
+    } else {
+      setFavouritesList((current) => [...current, objectID])
+      setShowAdded(true)
+    }
   }
 
   const na = 'N/A',
@@ -63,6 +81,12 @@ export default function ArtworkCardDetail({ objectID }) {
             <strong>Dimensions: </strong>
             {dimensions}
           </Card.Text>
+          <Button
+            variant={showAdded ? 'primary' : 'outline-primary'}
+            onClick={favouritesClicked}
+          >
+            + Favourite{showAdded && ' (added)'}
+          </Button>
         </Card.Body>
       </Card>
     </>

@@ -7,27 +7,40 @@ export default function MainNav() {
   const router = useRouter()
 
   const [query, setQuery] = useState('')
+  const [isExpanded, setIsExpanded] = useState(false)
 
   function handleSubmit(event) {
     event.preventDefault()
     router.push(`/artwork?title=true&q=${query}`)
+    setIsExpanded(false)
   }
 
   return (
     <>
-      <Navbar expand="lg" className="fixed-top navbar-dark bg-primary">
+      <Navbar
+        expand="lg"
+        className="fixed-top navbar-dark bg-dark"
+        expanded={isExpanded}
+      >
         <Container>
           <Navbar.Brand>Leonardo de la Mora Caceres</Navbar.Brand>
-          <Nav className="me-auto">
-            <Link href="/" passHref legacyBehavior>
-              <Nav.Link>Home</Nav.Link>
-            </Link>
-            <Link href="/search" passHref legacyBehavior>
-              <Nav.Link>Advanced Search</Nav.Link>
-            </Link>
-          </Nav>
-          <Form className="d-flex" onSubmit={handleSubmit}>
-            <Form.Group>
+          <Navbar.Toggle
+            onClick={() => setIsExpanded(!isExpanded)}
+            aria-controls="basic-navbar-nav"
+          />
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="me-auto">
+              <Link href="/" passHref legacyBehavior>
+                <Nav.Link onClick={() => setIsExpanded(false)}>Home</Nav.Link>
+              </Link>
+              <Link href="/search" passHref legacyBehavior>
+                <Nav.Link onClick={() => setIsExpanded(false)}>
+                  Advanced Search
+                </Nav.Link>
+              </Link>
+            </Nav>
+            &nbsp;
+            <Form className="d-flex" onSubmit={handleSubmit}>
               <Form.Control
                 type="search"
                 placeholder="Search"
@@ -35,11 +48,12 @@ export default function MainNav() {
                 vlaue={query}
                 onChange={(e) => setQuery(e.target.value)}
               />
-            </Form.Group>
-            <Button type="submit" variant="success">
-              Search
-            </Button>
-          </Form>
+              <Button type="submit" variant="success">
+                Search
+              </Button>
+            </Form>
+            &nbsp;
+          </Navbar.Collapse>
         </Container>
       </Navbar>
       <br />
