@@ -1,9 +1,12 @@
 import { useForm } from 'react-hook-form'
 import { useRouter } from 'next/router'
 import { Row, Col, Button, Form } from 'react-bootstrap'
+import { useAtom } from 'jotai'
+import { searchHistoryAtom } from '@/store'
 
 export default function AdvancedSearch() {
   const router = useRouter()
+  const [searchHistory, setSearchHistory] = useAtom(searchHistoryAtom)
 
   const {
     register,
@@ -22,7 +25,9 @@ export default function AdvancedSearch() {
       `&isHighlight=${data.isHighlight || false}` +
       `&q=${data.q}`
 
-    router.push(`/artwork?${queryString}`)
+    const final_query = `/artwork?${queryString}`
+    setSearchHistory((current) => [...current, final_query])
+    router.push(final_query)
   }
 
   return (

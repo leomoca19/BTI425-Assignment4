@@ -1,4 +1,4 @@
 import { atom } from 'jotai'
 
 export const favouritesAtom = atom([])
-export const searchHistory = atom([])
+export const searchHistoryAtom = atom([])
