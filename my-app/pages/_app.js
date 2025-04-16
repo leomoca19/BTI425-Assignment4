@@ -1,15 +1,13 @@
-import 'bootstrap/dist/css/bootstrap.min.css'
-import Layout from '@/components/Layout'
 import { SWRConfig } from 'swr'
+import Layout from '@/components/Layout'
+import RouteGuard from '@/components/RouteGuard'
+import 'bootstrap/dist/css/bootstrap.min.css'
 
-const fetcher = async (url) => {
+async function fetcher(url) {
   const res = await fetch(url)
 
-  // If the status code is not in the range 200-299,
-  // we still try to parse and throw it.
   if (!res.ok) {
     const error = new Error('An error occurred while fetching the data.')
-    // Attach extra info to the error object
     error.info = await res.json()
     error.status = res.status
     throw error
@@ -18,14 +16,14 @@ const fetcher = async (url) => {
   return res.json()
 }
 
-export default function App({ Component, pageProps }) {
+export default function MyApp({ Component, pageProps }) {
   return (
-    <>
-      <Layout>
-        <SWRConfig value={{ fetcher }}>
+    <SWRConfig value={{ fetcher }}>
+      <RouteGuard>
+        <Layout>
           <Component {...pageProps} />
-        </SWRConfig>
-      </Layout>
-    </>
+        </Layout>
+      </RouteGuard>
+    </SWRConfig>
   )
 }
