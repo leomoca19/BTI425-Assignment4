@@ -1,6 +1,6 @@
 import { useAtom } from 'jotai'
 import { favouritesAtom } from '@/store'
-import { Row, Col, Container, Card, CardTitle } from 'react-bootstrap'
+import { Row, Col, Container, Card } from 'react-bootstrap'
 import ArtworkCard from '@/components/ArtworkCard'
 
 export default function Favourites() {
@@ -12,6 +12,8 @@ export default function Favourites() {
       Try adding some new artwork to the list
     </Card>
   )
+
+  if (!favouritesList) return null
 
   if (favouritesList.length > 0) {
     content = favouritesList.map((objectID) => (

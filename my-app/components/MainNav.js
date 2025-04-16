@@ -1,42 +1,50 @@
-import {
-  Container,
-  Nav,
-  Navbar,
-  Form,
-  Button,
-  NavDropdown,
-} from 'react-bootstrap'
-import Link from 'next/link'
-import { useRouter } from 'next/router'
+'use client'
+
 import { useState } from 'react'
+import { useRouter } from 'next/router'
+import Button from 'react-bootstrap/Button'
+import Container from 'react-bootstrap/Container'
+import Form from 'react-bootstrap/Form'
+import Nav from 'react-bootstrap/Nav'
+import Navbar from 'react-bootstrap/Navbar'
+import NavDropdown from 'react-bootstrap/NavDropdown'
+import Link from 'next/link'
+
 import { useAtom } from 'jotai'
 import { searchHistoryAtom } from '@/store'
+import { addToHistory } from '@/lib/userData'
+import { readToken, removeToken } from '@/lib/authenticate'
 
 export default function MainNav() {
-  const router = useRouter()
-
-  const [query, setQuery] = useState('')
+  const [searchField, setSearchField] = useState('')
   const [isExpanded, setIsExpanded] = useState(false)
   const [searchHistory, setSearchHistory] = useAtom(searchHistoryAtom)
+  const router = useRouter()
+  const token = readToken()
 
-  function handleSubmit(event) {
+  const handleSearch = async (event) => {
     event.preventDefault()
-    const art = '/artwork?'
-    const title = 'title=true'
-    const q = `&q=${query}`
-    const final_query = art + title + q
 
-    router.push(final_query)
-    setSearchHistory((current) => [...current, title + q])
+    if (searchField.trim()) {
+      const queryString = `title=true&q=${searchField}`
+      setSearchHistory(await addToHistory(queryString))
+      router.push(`/artwork?${queryString}`)
+      setIsExpanded(false)
+    }
+  }
+
+  const logout = () => {
     setIsExpanded(false)
+    removeToken()
+    router.push('/login')
   }
 
   return (
     <>
       <Navbar
-        expand="lg"
         className="fixed-top navbar-dark bg-dark"
         expanded={isExpanded}
+        expand="lg"
       >
         <Container>
           <Navbar.Brand>Leonardo de la Mora Caceres</Navbar.Brand>
@@ -54,49 +62,71 @@ export default function MainNav() {
                   Home
                 </Nav.Link>
               </Link>
-              <Link href="/search" passHref legacyBehavior>
-                <Nav.Link
-                  active={router.pathname === '/search'}
-                  onClick={() => setIsExpanded(false)}
-                >
-                  Advanced Search
-                </Nav.Link>
-              </Link>
+
+              {token && (
+                <Link href="/search" passHref legacyBehavior>
+                  <Nav.Link
+                    active={router.pathname === '/search'}
+                    onClick={() => setIsExpanded(false)}
+                  >
+                    Advanced Search
+                  </Nav.Link>
+                </Link>
+              )}
             </Nav>
-            &nbsp;
-            <Form className="d-flex" onSubmit={handleSubmit}>
-              <Form.Control
-                type="search"
-                placeholder="Search"
-                required
-                vlaue={query}
-                onChange={(e) => setQuery(e.target.value)}
-              />
-              <Button type="submit" variant="success">
-                Search
-              </Button>
-            </Form>
-            &nbsp;
+
+            {token && (
+              <Form className="d-flex" onSubmit={handleSearch}>
+                <Form.Control
+                  type="search"
+                  placeholder="Search"
+                  className="me-2"
+                  aria-label="Search"
+                  value={searchField}
+                  onChange={(e) => setSearchField(e.target.value)}
+                />
+                <Button type="submit" variant="outline-success">
+                  Search
+                </Button>
+              </Form>
+            )}
+
             <Nav>
-              <NavDropdown title="User Name" id="user-dropdown">
-                {/* I think that buttons look a bit better */}
-                <Link href="/favourites" passHref legacyBehavior>
-                  <NavDropdown.Item
-                    active={router.pathname === '/favourites'}
-                    onClick={() => setIsExpanded(false)}
-                  >
-                    <Button>Favourites</Button>
-                  </NavDropdown.Item>
-                </Link>
-                <Link href="/history" passHref legacyBehavior>
-                  <NavDropdown.Item
-                    active={router.pathname === '/'}
-                    onClick={() => setIsExpanded(false)}
-                  >
-                    <Button>Search History</Button>
-                  </NavDropdown.Item>
-                </Link>
-              </NavDropdown>
+              {token ? (
+                <NavDropdown title={token.userName} id="user-dropdown">
+                  <Link href="/favourites" passHref legacyBehavior>
+                    <NavDropdown.Item onClick={() => setIsExpanded(false)}>
+                      Favourites
+                    </NavDropdown.Item>
+                  </Link>
+                  <Link href="/history" passHref legacyBehavior>
+                    <NavDropdown.Item onClick={() => setIsExpanded(false)}>
+                      Search History
+                    </NavDropdown.Item>
+                  </Link>
+                  <NavDropdown.Divider />
+                  <NavDropdown.Item onClick={logout}>Logout</NavDropdown.Item>
+                </NavDropdown>
+              ) : (
+                <Nav>
+                  <Link href="/login" passHref legacyBehavior>
+                    <Nav.Link
+                      active={router.pathname === '/login'}
+                      onClick={() => setIsExpanded(false)}
+                    >
+                      Login
+                    </Nav.Link>
+                  </Link>
+                  <Link href="/register" passHref legacyBehavior>
+                    <Nav.Link
+                      active={router.pathname === '/register'}
+                      onClick={() => setIsExpanded(false)}
+                    >
+                      Register
+                    </Nav.Link>
+                  </Link>
+                </Nav>
+              )}
             </Nav>
           </Navbar.Collapse>
         </Container>
