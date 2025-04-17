@@ -1,26 +1,29 @@
-'use client'
-
-import { useState } from 'react'
 import { useRouter } from 'next/router'
-import Button from 'react-bootstrap/Button'
-import Container from 'react-bootstrap/Container'
-import Form from 'react-bootstrap/Form'
-import Nav from 'react-bootstrap/Nav'
-import Navbar from 'react-bootstrap/Navbar'
-import NavDropdown from 'react-bootstrap/NavDropdown'
 import Link from 'next/link'
-
+import {
+  Button,
+  Container,
+  Form,
+  Nav,
+  Navbar,
+  NavDropdown,
+} from 'react-bootstrap'
 import { useAtom } from 'jotai'
 import { searchHistoryAtom } from '@/store'
 import { addToHistory } from '@/lib/userData'
 import { readToken, removeToken } from '@/lib/authenticate'
+import { useState, useEffect } from 'react'
 
 export default function MainNav() {
   const [searchField, setSearchField] = useState('')
   const [isExpanded, setIsExpanded] = useState(false)
   const [searchHistory, setSearchHistory] = useAtom(searchHistoryAtom)
   const router = useRouter()
-  const token = readToken()
+  const [token, setToken] = useState(null)
+
+  useEffect(() => {
+    setToken(readToken())
+  }, [])
 
   const handleSearch = async (event) => {
     event.preventDefault()
